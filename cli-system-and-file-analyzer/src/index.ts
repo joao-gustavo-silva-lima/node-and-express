@@ -1,1 +1,3 @@
-const getSystemDetails = require("./system");
+import fs from "node:fs";
+
+console.log(fs);
