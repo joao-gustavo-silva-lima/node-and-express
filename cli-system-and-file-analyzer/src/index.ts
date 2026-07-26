@@ -1,0 +1,1 @@
+const getSystemDetails = require("./system");
