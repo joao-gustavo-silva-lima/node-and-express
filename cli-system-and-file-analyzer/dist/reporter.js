@@ -1,10 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const node_fs_1 = require("node:fs");
-const path = require("node:path");
+import { createRequire as _createRequire } from "module";
+const __require = _createRequire(import.meta.url);
+import { existsSync } from "node:fs";
+const path = __require("node:path");
 const LOG_DIRECTORY = path.join(__dirname, "..", "logs");
 function chaseLogDirectory() {
-    if ((0, node_fs_1.existsSync)(LOG_DIRECTORY)) {
+    if (existsSync(LOG_DIRECTORY)) {
         return;
     }
     //CREATE IF DIR DOESN'T EXIST
