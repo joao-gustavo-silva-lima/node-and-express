@@ -9,18 +9,20 @@ export class Reporter {
     const fileName = this.getUniqueFileName();
 
     if (!this.hasOutputDirectory()) {
-      console.log("The application exited.");
+      console.log("A aplicação encerrou.");
       return;
     }
 
     await writeFile(fileName, this.getReportData(), "utf-8", (error) => {
       if (error) {
-        console.log(`An error ocurred during log file creation:\n\n${error}`);
+        console.log(
+          `Um erro ocorreu durante a criação do arquivo de log:\n\n${error}`,
+        );
         return;
       }
 
-      console.log(`The log file was created successfully.`);
-      console.log("The application exited.");
+      console.log(`O arquivo de log foi criado com sucesso.`);
+      console.log("A aplicação encerrou.");
     });
   }
 
@@ -45,12 +47,14 @@ export class Reporter {
     try {
       mkdirSync(this.outputDirectory);
       console.log(
-        `Logs directory created successfully:\n${this.outputDirectory}`,
+        `O diretório de logs foi criado com sucesso:\n${this.outputDirectory}`,
       );
 
       return true;
     } catch (error: unknown) {
-      console.log(`An error ocurred during logs directory creation:\n${error}`);
+      console.log(
+        `Um erro ocorreu durante a criação do diretório de logs:\n${error}`,
+      );
 
       return false;
     }
@@ -58,8 +62,8 @@ export class Reporter {
 
   private static getReportData() {
     return JSON.stringify({
-      time: Date(),
-      content: getSystemDetails(),
+      Horário: Date(),
+      Conteúdo: getSystemDetails(),
     });
   }
 }
