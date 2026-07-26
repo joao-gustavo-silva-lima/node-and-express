@@ -1,3 +1,3 @@
-import fs from "node:fs";
+import { Reporter } from "./reporter.js";
 
-console.log(fs);
+Reporter.report();

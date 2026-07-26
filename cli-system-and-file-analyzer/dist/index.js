@@ -1,3 +1,3 @@
-import fs from "node:fs";
-console.log(fs);
+console.log("Hello World");
+export {};
 //# sourceMappingURL=index.js.map
