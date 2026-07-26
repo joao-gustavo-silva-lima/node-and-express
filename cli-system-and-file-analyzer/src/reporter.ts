@@ -1,4 +1,5 @@
-import { existsSync, mkdirSync, writeFile } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { getSystemDetails } from "./system.js";
 import path from "node:path";
 
@@ -13,17 +14,16 @@ export class Reporter {
       return;
     }
 
-    await writeFile(fileName, this.getReportData(), "utf-8", (error) => {
-      if (error) {
-        console.log(
-          `Um erro ocorreu durante a criação do arquivo de log:\n\n${error}`,
-        );
-        return;
-      }
-
+    try {
+      await writeFile(fileName, this.getReportData(), "utf-8");
       console.log(`O arquivo de log foi criado com sucesso.`);
+    } catch (error) {
+      console.log(
+        `Um erro ocorreu durante a criação do arquivo de log:\n\n${error}`,
+      );
+    } finally {
       console.log("A aplicação encerrou.");
-    });
+    }
   }
 
   private static getUniqueFileName(): string {
@@ -61,9 +61,13 @@ export class Reporter {
   }
 
   private static getReportData() {
-    return JSON.stringify({
-      Horário: Date(),
-      Conteúdo: getSystemDetails(),
-    });
+    return JSON.stringify(
+      {
+        Horário: new Date().toISOString(),
+        Conteúdo: getSystemDetails(),
+      },
+      null,
+      2,
+    );
   }
 }
