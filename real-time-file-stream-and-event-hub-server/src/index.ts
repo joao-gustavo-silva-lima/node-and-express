@@ -1,20 +1,21 @@
 import http from "http";
-import routes from "./routes.json" with { type: "json" };
 
 const PORT = 2409;
 
-const server = http.createServer((request, response) => {
-  const url = request.url as keyof typeof routes;
-  const route = routes[url] ?? routes["/error"];
+const server = http.createServer(async (req, res) => {
+  const host = req.headers.host ?? "localhost";
+  const url = new URL(req.url ?? "/", `http://${host}`);
 
-  if (request.method === route.method) {
-    response.end(route.content);
-  } else {
-    response.end(`Unexpected Request Method: '${request.method}'`);
+  if (url.pathname === "/file" && req.method === "GET") {
+    res.end("[WIP]");
+  }
+  if (url.pathname === "/upload" && req.method === "POST") {
+    res.end("[WIP]");
   }
 });
 
 server.listen(PORT);
+
 server.on("listening", () =>
   console.log(`Server listening at port ...${PORT}...`),
 );
