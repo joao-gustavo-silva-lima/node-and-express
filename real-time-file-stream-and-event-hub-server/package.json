@@ -1,0 +1,18 @@
+{
+  "name": "real-time-file-stream-and-event-hub-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"tsc --watch\" \"nodemon ./dist/index.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "concurrently": "^10.0.4",
+    "nodemon": "^3.1.14"
+  }
+}
