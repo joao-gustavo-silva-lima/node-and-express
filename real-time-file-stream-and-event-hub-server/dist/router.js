@@ -1,13 +1,12 @@
+import { handleUpload, handleDownload, } from "./request-handler.js";
 export const ROUTES = {
     "/file": {
         method: "GET",
-        content: "[WIP]",
-        "req-method": () => undefined,
+        "handle-req": handleDownload,
     },
     "/upload": {
         method: "POST",
-        content: "[WIP]",
-        "req-method": () => undefined,
+        "handle-req": handleUpload,
     },
 };
 //# sourceMappingURL=router.js.map

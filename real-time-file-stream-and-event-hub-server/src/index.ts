@@ -10,20 +10,18 @@ const server = http.createServer(async (req, res) => {
   const route = routes[url.pathname] ?? undefined;
 
   if (route === undefined) {
-    res.statusCode = 404;
-    res.end("404 Pagina Nao Encontrada");
+    res.writeHead(404, "Not Found");
+    res.end();
     return;
   }
 
   if (req.method !== route.method) {
-    res.statusCode = 405;
-    res.end(
-      `Foi esperado o metodo '${route.method}' na requisicao em '${url.pathname}'. Foi recebido '${req.method ?? ""}'.`,
-    );
+    res.writeHead(405, "Method Not Allowed");
+    res.end();
     return;
   }
 
-  res.end(route.content);
+  route["handle-req"](url, req, res);
 });
 
 server.listen(PORT);

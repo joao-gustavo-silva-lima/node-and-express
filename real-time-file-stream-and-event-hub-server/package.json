@@ -2,7 +2,7 @@
   "name": "real-time-file-stream-and-event-hub-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "dev": "concurrently \"tsc --watch\" \"nodemon ./dist/index.js\""
   },
