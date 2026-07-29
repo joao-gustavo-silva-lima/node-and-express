@@ -2,6 +2,7 @@ import { createReadStream, createWriteStream, constants } from "fs";
 import { IncomingMessage, ServerResponse } from "http";
 import { access } from "fs/promises";
 import path from "path";
+import { serverLogger } from "./logger.js";
 
 const UPLOADS_DIR = path.join(import.meta.dirname, "../uploads");
 
@@ -28,24 +29,31 @@ export const handleUpload: RequestHandlerFunction = function (
   const targetFileName = path.join(UPLOADS_DIR, sanitizedFileName);
   const writeStream = createWriteStream(targetFileName);
 
-  req.pipe(writeStream);
+  writeStream.on("pipe", (_) => serverLogger.emit("start upload", fileName));
 
-  req.on("error", (_) => {
+  req.on("data", (_) => serverLogger.emit("progress upload", fileName));
+
+  req.on("error", (err) => {
     writeStream.destroy();
+    serverLogger.emit("error upload", fileName, err);
     res.writeHead(400, "Client Side Upload Failed");
     res.end();
   });
 
-  writeStream.on("error", (_) => {
+  writeStream.on("error", (err) => {
     req.destroy();
+    serverLogger.emit("error upload", fileName, err);
     res.writeHead(500, "Server Disk Writing Failed");
     res.end();
   });
 
   writeStream.on("finish", () => {
+    serverLogger.emit("finish upload", fileName);
     res.writeHead(200, "Server Disk Writing Succeded");
     res.end();
   });
+
+  req.pipe(writeStream);
 };
 
 export const handleDownload: RequestHandlerFunction = async function (
@@ -76,14 +84,14 @@ export const handleDownload: RequestHandlerFunction = async function (
 
   readStream.pipe(res);
 
-  readStream.on("error", (_) => {
+  readStream.on("error", (err) => {
     if (!res.headersSent) {
       res.writeHead(500, "Server Disk Reading Failed");
       res.end();
     }
   });
 
-  res.on("error", (_) => {
+  res.on("error", (err) => {
     readStream.destroy();
     res.writeHead(400, "Download was Interrupted");
     res.end();
