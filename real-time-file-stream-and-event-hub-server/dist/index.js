@@ -7,13 +7,15 @@ const server = http
     const url = new URL(req.url ?? "/", `http://${host}`);
     const route = routes[url.pathname] ?? undefined;
     if (route === undefined) {
-        res.writeHead(404, "Path Not Found");
-        res.end();
+        res.writeHead(404);
+        res.end(JSON.stringify({ error: "Path Not Found" }));
         return;
     }
     if (req.method !== route.method) {
-        res.writeHead(405, "Method Not Allowed");
-        res.end();
+        res.writeHead(405);
+        res.end(JSON.stringify({
+            error: `Method Not Allowed. Expected ${route.method}`,
+        }));
         return;
     }
     route["handle-req"](req, res, url);

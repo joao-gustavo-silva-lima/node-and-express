@@ -11,14 +11,18 @@ const server = http
     const route = routes[url.pathname] ?? undefined;
 
     if (route === undefined) {
-      res.writeHead(404, "Path Not Found");
-      res.end();
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Path Not Found" }));
       return;
     }
 
     if (req.method !== route.method) {
-      res.writeHead(405, "Method Not Allowed");
-      res.end();
+      res.writeHead(405, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: `Method Not Allowed. Expected ${route.method}`,
+        }),
+      );
       return;
     }
 

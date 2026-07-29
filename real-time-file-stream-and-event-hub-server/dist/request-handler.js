@@ -6,8 +6,8 @@ const UPLOADS_DIR = path.join(import.meta.dirname, "../uploads");
 export const handleUpload = function (req, res, url) {
     const fileName = req.headers["upload-file-name"];
     if (fileName === undefined) {
-        res.writeHead(400, "Missing Upload File Name");
-        res.end();
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: "Missing Upload File Name" }));
         return;
     }
     const sanitizedFileName = path.basename(fileName);
@@ -18,27 +18,27 @@ export const handleUpload = function (req, res, url) {
     req.on("error", (err) => {
         writeStream.destroy();
         serverLogger.emit("error upload", fileName, err);
-        res.writeHead(400, "Client Side Upload Failed");
-        res.end();
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: "Client Upload Failed" }));
     });
     writeStream.on("error", (err) => {
         req.destroy();
         serverLogger.emit("error upload", fileName, err);
-        res.writeHead(500, "Server Disk Writing Failed");
-        res.end();
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: "Server Disk Writing Failed" }));
     });
     writeStream.on("finish", () => {
         serverLogger.emit("finish upload", fileName);
-        res.writeHead(200, "Server Disk Writing Succeded");
-        res.end();
+        res.writeHead(200);
+        res.end(JSON.stringify({ OK: "Upload Concluded Successfully" }));
     });
     req.pipe(writeStream);
 };
 export const handleDownload = async function (req, res, url) {
     const fileName = url.searchParams.get("name");
-    if (fileName === null) {
-        res.writeHead(400, "Missing File Name as Search Parameter");
-        res.end();
+    if (fileName === null || /^\s*$/.test(fileName)) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: "Missing File Name as Search Parameter" }));
         return;
     }
     const sanitizedFileName = path.basename(fileName);
@@ -47,27 +47,31 @@ export const handleDownload = async function (req, res, url) {
         await access(targetFileName, constants.F_OK);
     }
     catch {
-        res.writeHead(404, "File Name Not Found");
-        res.end();
+        res.writeHead(404);
+        res.end(JSON.stringify({ error: "File Not Found" }));
         return;
     }
     const readStream = createReadStream(targetFileName);
-    readStream.pipe(res);
     readStream.on("error", (err) => {
         if (!res.headersSent) {
-            res.writeHead(500, "Server Disk Reading Failed");
-            res.end();
+            res.writeHead(500);
+            res.end(JSON.stringify({ error: "Server Disk Reading Failed" }));
         }
     });
     res.on("error", (err) => {
         readStream.destroy();
-        res.writeHead(400, "Download was Interrupted");
-        res.end();
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: "Download was Interrupted" }));
     });
     res.on("close", () => {
         if (!res.writableEnded) {
             readStream.destroy();
         }
     });
+    readStream.on("end", () => {
+        res.writeHead(200);
+        res.end(JSON.stringify({ OK: "Download Finished Successfully" }));
+    });
+    readStream.pipe(res);
 };
 //# sourceMappingURL=request-handler.js.map

@@ -20,8 +20,8 @@ export const handleUpload: RequestHandlerFunction = function (
   const fileName = req.headers["upload-file-name"] as string | undefined;
 
   if (fileName === undefined) {
-    res.writeHead(400, "Missing Upload File Name");
-    res.end();
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Missing Upload File Name" }));
     return;
   }
 
@@ -36,21 +36,21 @@ export const handleUpload: RequestHandlerFunction = function (
   req.on("error", (err) => {
     writeStream.destroy();
     serverLogger.emit("error upload", fileName, err);
-    res.writeHead(400, "Client Side Upload Failed");
-    res.end();
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Client Upload Failed" }));
   });
 
   writeStream.on("error", (err) => {
     req.destroy();
     serverLogger.emit("error upload", fileName, err);
-    res.writeHead(500, "Server Disk Writing Failed");
-    res.end();
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Server Disk Writing Failed" }));
   });
 
   writeStream.on("finish", () => {
     serverLogger.emit("finish upload", fileName);
-    res.writeHead(200, "Server Disk Writing Succeded");
-    res.end();
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ OK: "Upload Concluded Successfully" }));
   });
 
   req.pipe(writeStream);
@@ -63,9 +63,9 @@ export const handleDownload: RequestHandlerFunction = async function (
 ) {
   const fileName = url.searchParams.get("name");
 
-  if (fileName === null) {
-    res.writeHead(400, "Missing File Name as Search Parameter");
-    res.end();
+  if (fileName === null || /^\s*$/.test(fileName)) {
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Missing File Name as Search Parameter" }));
     return;
   }
 
@@ -75,26 +75,24 @@ export const handleDownload: RequestHandlerFunction = async function (
   try {
     await access(targetFileName, constants.F_OK);
   } catch {
-    res.writeHead(404, "File Name Not Found");
-    res.end();
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "File Not Found" }));
     return;
   }
 
   const readStream = createReadStream(targetFileName);
 
-  readStream.pipe(res);
-
   readStream.on("error", (err) => {
     if (!res.headersSent) {
-      res.writeHead(500, "Server Disk Reading Failed");
-      res.end();
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Server Disk Reading Failed" }));
     }
   });
 
   res.on("error", (err) => {
     readStream.destroy();
-    res.writeHead(400, "Download was Interrupted");
-    res.end();
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Download was Interrupted" }));
   });
 
   res.on("close", () => {
@@ -102,4 +100,10 @@ export const handleDownload: RequestHandlerFunction = async function (
       readStream.destroy();
     }
   });
+
+  readStream.on("end", () => {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ OK: "Download Finished Successfully" }));
+  });
+  readStream.pipe(res);
 };
