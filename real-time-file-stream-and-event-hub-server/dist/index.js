@@ -16,7 +16,7 @@ const server = http
         res.end();
         return;
     }
-    route["handle-req"](url, req, res);
+    route["handle-req"](req, res, url);
 })
     .listen(PORT);
 server.on("listening", () => console.log(`Server listening at port ${PORT}`));

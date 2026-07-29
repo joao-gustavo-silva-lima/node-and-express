@@ -22,7 +22,7 @@ const server = http
       return;
     }
 
-    route["handle-req"](url, req, res);
+    route["handle-req"](req, res, url);
   })
   .listen(PORT);
 

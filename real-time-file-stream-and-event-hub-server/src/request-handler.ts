@@ -1,30 +1,31 @@
-import { createWriteStream } from "fs";
+import { createReadStream, createWriteStream, constants } from "fs";
 import { IncomingMessage, ServerResponse } from "http";
+import { access } from "fs/promises";
 import path from "path";
 
 const UPLOADS_DIR = path.join(import.meta.dirname, "../uploads");
 
 export type RequestHandlerFunction = (
-  url: URL,
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
+  url: URL,
 ) => unknown;
 
 export const handleUpload: RequestHandlerFunction = function (
-  url: URL,
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
+  url: URL,
 ) {
   const fileName = req.headers["upload-file-name"] as string | undefined;
 
   if (fileName === undefined) {
-    console.log("Missing Upload File Name");
     res.writeHead(400, "Missing Upload File Name");
     res.end();
     return;
   }
 
-  const targetFileName = path.join(UPLOADS_DIR, fileName);
+  const sanitizedFileName = path.basename(fileName);
+  const targetFileName = path.join(UPLOADS_DIR, sanitizedFileName);
   const writeStream = createWriteStream(targetFileName);
 
   req.pipe(writeStream);
@@ -37,7 +38,7 @@ export const handleUpload: RequestHandlerFunction = function (
 
   writeStream.on("error", (_) => {
     req.destroy();
-    res.writeHead(500, "Server's Disk Writing Failed");
+    res.writeHead(500, "Server Disk Writing Failed");
     res.end();
   });
 
@@ -47,8 +48,50 @@ export const handleUpload: RequestHandlerFunction = function (
   });
 };
 
-export const handleDownload: RequestHandlerFunction = function (
-  url: URL,
+export const handleDownload: RequestHandlerFunction = async function (
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
-) {};
+  url: URL,
+) {
+  const fileName = url.searchParams.get("name");
+
+  if (fileName === null) {
+    res.writeHead(400, "Missing File Name as Search Parameter");
+    res.end();
+    return;
+  }
+
+  const sanitizedFileName = path.basename(fileName);
+  const targetFileName = path.join(UPLOADS_DIR, sanitizedFileName);
+
+  try {
+    await access(targetFileName, constants.F_OK);
+  } catch {
+    res.writeHead(404, "File Name Not Found");
+    res.end();
+    return;
+  }
+
+  const readStream = createReadStream(targetFileName);
+
+  readStream.pipe(res);
+
+  readStream.on("error", (_) => {
+    if (!res.headersSent) {
+      res.writeHead(500, "Server Disk Reading Failed");
+      res.end();
+    }
+  });
+
+  res.on("error", (_) => {
+    readStream.destroy();
+    res.writeHead(400, "Download was Interrupted");
+    res.end();
+  });
+
+  res.on("close", () => {
+    if (!res.writableEnded) {
+      readStream.destroy();
+    }
+  });
+};
