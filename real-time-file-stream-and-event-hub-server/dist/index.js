@@ -1,22 +1,23 @@
 import http from "http";
 import { ROUTES as routes } from "./router.js";
 const PORT = 2409;
-const server = http.createServer(async (req, res) => {
+const server = http
+    .createServer(async (req, res) => {
     const host = req.headers.host ?? "localhost";
     const url = new URL(req.url ?? "/", `http://${host}`);
     const route = routes[url.pathname] ?? undefined;
     if (route === undefined) {
-        res.writeHead(404);
-        res.end("404 Pagina Nao Encontrada");
+        res.writeHead(404, "Path Not Found");
+        res.end();
         return;
     }
     if (req.method !== route.method) {
-        res.writeHead(405);
-        res.end(`Foi esperado o metodo '${route.method}' na requisicao em '${url.pathname}'. Foi recebido '${req.method ?? ""}'.`);
+        res.writeHead(405, "Method Not Allowed");
+        res.end();
         return;
     }
     route["handle-req"](url, req, res);
-});
-server.listen(PORT);
-server.on("listening", () => console.log(`Server listening at port ...${PORT}...`));
+})
+    .listen(PORT);
+server.on("listening", () => console.log(`Server listening at port ${PORT}`));
 //# sourceMappingURL=index.js.map

@@ -2,34 +2,30 @@ import { createWriteStream } from "fs";
 import path from "path";
 const UPLOADS_DIR = path.join(import.meta.dirname, "../uploads");
 export const handleUpload = function (url, req, res) {
-    const fileName = req.headers["x-file-name"];
-    if (!fileName) {
-        res.writeHead(400);
-        res.end("Foi esperado o nome do arquivo de upload em 'x-file-name' no cabecalho da requisicao.");
+    const fileName = req.headers["upload-file-name"];
+    if (fileName === undefined) {
+        console.log("Missing Upload File Name");
+        res.writeHead(400, "Missing Upload File Name");
+        res.end();
         return;
     }
-    const uploadingFilePath = path.join(UPLOADS_DIR, `./${fileName}`);
-    const writeStream = createWriteStream(uploadingFilePath, "utf-8");
-    writeStream.on("open", (_) => {
-        console.log(`O upload do arquivo ${fileName} foi iniciado.`);
+    const targetFileName = path.join(UPLOADS_DIR, fileName);
+    const writeStream = createWriteStream(targetFileName);
+    req.pipe(writeStream);
+    req.on("error", (_) => {
+        writeStream.destroy();
+        res.writeHead(400, "Client Side Upload Failed");
+        res.end();
     });
-    req;
+    writeStream.on("error", (_) => {
+        req.destroy();
+        res.writeHead(500, "Server's Disk Writing Failed");
+        res.end();
+    });
     writeStream.on("finish", () => {
-        writeStream.close();
-        res.writeHead(200);
-        console.log(`O upload do arquivo ${fileName} foi finalizado com êxito.`);
+        res.writeHead(200, "Server Disk Writing Succeded");
         res.end();
     });
-    writeStream.on("error", (err) => {
-        console.log(`O upload do arquivo ${fileName} apresentou um erro:\n\n${err}`);
-        writeStream.close();
-        res.writeHead(409);
-        res.end();
-    });
-    req.on("data", async (chunk) => {
-        writeStream.write(chunk);
-    });
-    req.on("end", () => { });
 };
 export const handleDownload = function (url, req, res) { };
 //# sourceMappingURL=request-handler.js.map
