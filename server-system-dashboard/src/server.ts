@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { ROUTES } from "./router.js";
+import { ROUTES } from "./utils/router.utils.js";
 
 const PORT = 5000;
 
@@ -8,9 +8,9 @@ const server = createServer((req, res) => {
   const path = req.url ?? "/";
   const url = new URL(path, `http://${host}`);
 
-  const route = ROUTES[url.pathname] ?? "/not-found";
+  const route = ROUTES[url.pathname];
 
-  if (route === "/not-found") {
+  if (route === undefined) {
     res.writeHead(404, "Content-Type: application/json");
     res.end(JSON.stringify({ message: "Not Found" }));
     return;
