@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from "node:http";
 import { layoutRenderer, stylingRenderer } from "./cache.js";
+import { getSystemMetrics } from "./system-metrics.js";
 
 export type ControllerFunction = (
   url: URL,
@@ -47,4 +48,24 @@ export const serveCSS: ControllerFunction = (
       }),
     );
   }
+};
+
+export const serveSystemMetrics: ControllerFunction = (
+  url: URL,
+  req: IncomingMessage,
+  res: ServerResponse<IncomingMessage>,
+): void => {
+  const metrics = getSystemMetrics();
+
+  if (metrics === undefined) {
+    res.writeHead(500, { "content-type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: "Server Internal Error: fetching system metrics failed",
+      }),
+    );
+  }
+
+  res.writeHead(200, { "content-type": "application/json" });
+  res.end(metrics);
 };
