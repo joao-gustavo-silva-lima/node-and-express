@@ -2,16 +2,20 @@ import { IncomingMessage, ServerResponse } from "node:http";
 import { layoutRenderer, stylingRenderer } from "./cache.js";
 
 export type ControllerFunction = (
+  url: URL,
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ) => unknown;
 
 export const serveHTML: ControllerFunction = (
+  url: URL,
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ): void => {
   try {
-    const cachedHTML = layoutRenderer();
+    const cachedHTML = layoutRenderer({
+      styleSheetHref: `${url.origin}/styles.css`,
+    });
 
     res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     res.end(cachedHTML);
@@ -26,6 +30,7 @@ export const serveHTML: ControllerFunction = (
 };
 
 export const serveCSS: ControllerFunction = (
+  url: URL,
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ): void => {

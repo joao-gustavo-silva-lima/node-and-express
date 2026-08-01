@@ -26,7 +26,7 @@ const server = createServer((req, res) => {
     return;
   }
 
-  route.handle(req, res);
+  route.handle(url, req, res);
 }).listen(PORT);
 
 server.on("listening", () => {
