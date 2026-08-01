@@ -24,6 +24,7 @@ body {
   width: 100%;
   max-width: 500px;
   aspect-ratio: 1/1;
+  overflow-y: hidden;
   border-radius: 10px;
   background-color: white;
 }

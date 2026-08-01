@@ -11,19 +11,43 @@
       <nav class="container__tabs"></nav>
 
       <section class="container__view container__view--system">
+        <h2 class="container__view__title">Sistema</h2>
         <ul
           class="container__view__data-list container__view--system__data-list"
         ></ul>
       </section>
 
       <section class="container__view container__view--cpus">
+        <h2 class="container__view__title">CPU</h2>
         <ul
           class="container__view__data-list container__view--cpus__data-list"
         ></ul>
       </section>
 
-      <section class="container__view container__view--ram"></section>
+      <section class="container__view container__view--ram">
+        <h2 class="container__view__title">RAM: Em Uso / Total</h2>
+        <div class="container__view container__view--ram__ranged-data">
+          <input
+            class="container__view container__view--ram__ranged-data__usage-bar"
+            type="range"
+            value="0"
+            max="100"
+            min="0"
+            disabled
+          />
+          <p class="container__view--ram__ranged-data__fraction"></p>
+        </div>
+      </section>
     </main>
+
     <script src="../script.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"
+    ></script>
   </body>
 </html>

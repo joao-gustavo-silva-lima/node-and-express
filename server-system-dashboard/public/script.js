@@ -7,21 +7,29 @@ fetch(`${window.origin}/api/v1/metrics`)
   .catch((error) => console.log(error));
 
 const TABS_CONTAINER = document.querySelector(".container__tabs");
-const TAB_NAMES = ["Sistema", "CPU", "RAM"];
-
 const SYSTEM_CONTENT_CONTAINER = document.querySelector(
   ".container__view--system__data-list",
 );
 const CPUS_CONTENT_CONTAINER = document.querySelector(
   ".container__view--cpus__data-list",
 );
-const RAM_TAB = document.querySelector(".container__view--ram");
+const RAM_USAGE_TEXT = document.querySelector(
+  ".container__view--ram__ranged-data__fraction",
+);
+const RAM_USAGE_BAR = document.querySelector(
+  ".container__view--ram__ranged-data__usage-bar",
+);
 
 function handleDOM(data) {
-  for (const name of TAB_NAMES) {
+  for (const [tabName, ionIconName] of [
+    ["Sistema", "desktop-outline"],
+    ["CPU", "hardware-chip-outline"],
+    ["RAM", "stats-chart-outline"],
+  ]) {
     TABS_CONTAINER.innerHTML += `
-      <a href="#${name.toLowerCase()}" class="container__tabs__tab">
-        ${name}
+      <a class="container__tabs__tab" href="#${tabName.toLowerCase()}">
+        <ion-icon class="${ionIconName}"></ion-icon>
+        <p class="container__tabs__tab__name">${tabName}</p>
       </a>
     `;
   }
@@ -89,4 +97,16 @@ function handleDOM(data) {
       </li>
     `;
   }
+
+  const totalMemory = (data["memória total"] / 1024 ** 3).toFixed(2);
+  const usedMemory = (
+    (data["memória total"] - data["memória livre"]) /
+    1024 ** 3
+  ).toFixed(2);
+  const usagePercentage = Math.floor(
+    (Number(usedMemory) * 100) / Number(totalMemory),
+  );
+
+  RAM_USAGE_TEXT.innerHTML = `${usedMemory} GB / ${totalMemory} GB`;
+  RAM_USAGE_BAR.value = usagePercentage;
 }
