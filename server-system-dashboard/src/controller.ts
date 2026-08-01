@@ -66,6 +66,9 @@ export const serveSystemMetrics: ControllerFunction = (
     );
   }
 
-  res.writeHead(200, { "content-type": "application/json" });
-  res.end(metrics);
+  res.writeHead(200, {
+    "content-type": "application/json",
+    "cache-control": "no-store",
+  });
+  res.end(JSON.stringify(metrics, null, 2));
 };

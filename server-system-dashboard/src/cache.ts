@@ -5,7 +5,7 @@ import ejs, { cache } from "ejs";
 const ejsFilePath = path.join(import.meta.dirname, "index.ejs");
 const ejsFileName = path.basename(ejsFilePath);
 
-const stylingFilePath = path.join(import.meta.dirname, "styles.css");
+const stylingFilePath = path.join(import.meta.dirname, "../public/styles.css");
 const stylingFileName = path.basename(stylingFilePath);
 
 export const layoutRenderer = (() => {

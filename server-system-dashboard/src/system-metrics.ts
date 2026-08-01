@@ -24,23 +24,19 @@ const getMemory = () => {
 
 export function getSystemMetrics() {
   try {
-    return JSON.stringify(
-      {
-        host: hostname(),
-        machine: machine(),
-        version: version(),
-        architecture: arch(),
-        platform: platform(),
-        activityTime: uptime(),
+    return {
+      host: hostname(),
+      machine: machine(),
+      version: version(),
+      architecture: arch(),
+      platform: platform(),
+      activityTime: uptime(),
 
-        ...getMemory(),
-        cpus: cpus(),
+      ...getMemory(),
+      cpus: cpus(),
 
-        reportTime: new Date().toISOString(),
-      },
-      null,
-      2,
-    );
+      reportTime: new Date().toISOString(),
+    };
   } catch (error) {
     console.log(
       `Error encountered while trying to fetch system metrics: ${error}`,
