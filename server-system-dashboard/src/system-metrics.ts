@@ -10,32 +10,20 @@ import {
   platform,
 } from "os";
 
-const getMemory = () => {
-  let fmem = freemem();
-  let tmem = totalmem();
-  let umem = tmem - fmem;
-
-  return {
-    freeMemory: (fmem / 1024 ** 3).toFixed(2),
-    usedMemory: (umem / 1024 ** 3).toFixed(2),
-    totalMemory: (tmem / 1024 ** 3).toFixed(2),
-  };
-};
-
 export function getSystemMetrics() {
   try {
     return {
+      "horário do relatório": new Date().toISOString(),
+
       host: hostname(),
-      machine: machine(),
-      version: version(),
-      architecture: arch(),
-      platform: platform(),
-      activityTime: uptime(),
+      arquitetura: arch(),
+      plataforma: platform(),
+      "tempo de atividade": uptime(),
 
-      ...getMemory(),
+      "memória livre": freemem(),
+      "memória total": totalmem(),
+
       cpus: cpus(),
-
-      reportTime: new Date().toISOString(),
     };
   } catch (error) {
     console.log(

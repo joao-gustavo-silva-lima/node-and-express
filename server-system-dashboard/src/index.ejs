@@ -3,10 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href=<%= styleSheetHref %> />
+    <link rel="stylesheet" href="../styles.css" />
     <title>Dashboard | Sistema do Servidor</title>
   </head>
   <body>
+    <main class="container">
+      <nav class="container__tabs"></nav>
+
+      <section class="container__view container__view--system">
+        <ul
+          class="container__view__data-list container__view--system__data-list"
+        ></ul>
+      </section>
+
+      <section class="container__view container__view--cpus">
+        <ul
+          class="container__view__data-list container__view--cpus__data-list"
+        ></ul>
+      </section>
+
+      <section class="container__view container__view--ram"></section>
+    </main>
     <script src="../script.js"></script>
   </body>
 </html>

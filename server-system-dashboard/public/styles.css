@@ -6,4 +6,24 @@
 }
 
 body {
+  position: relative;
+
+  width: 100%;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #252525;
+}
+
+.container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1/1;
+  border-radius: 10px;
+  background-color: white;
 }
