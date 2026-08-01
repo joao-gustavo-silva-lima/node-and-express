@@ -8,6 +8,9 @@ const ejsFileName = path.basename(ejsFilePath);
 const stylingFilePath = path.join(import.meta.dirname, "../public/styles.css");
 const stylingFileName = path.basename(stylingFilePath);
 
+const scriptFilePath = path.join(import.meta.dirname, "../public/script.js");
+const scriptFileName = path.basename(scriptFilePath);
+
 export const layoutRenderer = (() => {
   try {
     const template = readFileSync(ejsFilePath, "utf-8");
@@ -32,6 +35,20 @@ export const stylingRenderer = (() => {
 
     return () => {
       throw ".css file not reached";
+    };
+  }
+})();
+
+export const scriptServer = (() => {
+  try {
+    const cachedScript = readFileSync(scriptFilePath, "utf-8");
+
+    return () => cachedScript;
+  } catch (error) {
+    console.log(`Caching '${scriptFileName}' failed:\n\n${error}`);
+
+    return () => {
+      throw ".js file not reached";
     };
   }
 })();

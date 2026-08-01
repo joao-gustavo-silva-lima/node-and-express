@@ -1,4 +1,9 @@
-import { serveCSS, serveHTML, serveSystemMetrics } from "./controller.js";
+import {
+  serveJS,
+  serveCSS,
+  serveHTML,
+  serveSystemMetrics,
+} from "./controller.js";
 import { ControllerFunction } from "./controller.js";
 
 interface Routes {
@@ -16,6 +21,10 @@ export const ROUTES: Routes = {
   "/styles.css": {
     method: "GET",
     handle: serveCSS,
+  },
+  "/script.js": {
+    method: "GET",
+    handle: serveJS,
   },
   "/api/v1/metrics": {
     method: "GET",

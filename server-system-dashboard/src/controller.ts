@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "node:http";
-import { layoutRenderer, stylingRenderer } from "./cache.js";
+import { layoutRenderer, scriptServer, stylingRenderer } from "./cache.js";
 import { getSystemMetrics } from "./system-metrics.js";
 
 export type ControllerFunction = (
@@ -16,6 +16,7 @@ export const serveHTML: ControllerFunction = (
   try {
     const cachedHTML = layoutRenderer({
       styleSheetHref: `${url.origin}/styles.css`,
+      scriptHref: `${url.origin}/script.js`,
     });
 
     res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
@@ -40,6 +41,26 @@ export const serveCSS: ControllerFunction = (
 
     res.writeHead(200, { "content-type": "text/css; charset=utf-8" });
     res.end(cachedCSS);
+  } catch (error) {
+    res.writeHead(500, { "content-type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: `Internal Server Error: ${error}`,
+      }),
+    );
+  }
+};
+
+export const serveJS: ControllerFunction = (
+  url: URL,
+  req: IncomingMessage,
+  res: ServerResponse<IncomingMessage>,
+): void => {
+  try {
+    const cachedScript = scriptServer();
+
+    res.writeHead(200, { "content-type": "text/javascript" });
+    res.end(cachedScript);
   } catch (error) {
     res.writeHead(500, { "content-type": "application/json" });
     res.end(
