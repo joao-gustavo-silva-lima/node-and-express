@@ -1,21 +1,18 @@
 import { IncomingMessage, ServerResponse } from "http";
-
-type Handler = (
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>,
-) => unknown;
+import { serveDashboardHTML } from "./controller.utils.js";
+import { ControllerFunction } from "./controller.utils.js";
 
 interface Routes {
   [path: string]: {
     method: "GET";
-    handle: Handler;
+    handle: ControllerFunction;
   };
 }
 
 export const ROUTES: Routes = {
   "/": {
     method: "GET",
-    handle: () => undefined,
+    handle: serveDashboardHTML,
   },
   "/api/v1/metrics": {
     method: "GET",

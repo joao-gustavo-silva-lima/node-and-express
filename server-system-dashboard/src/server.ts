@@ -29,4 +29,7 @@ const server = createServer((req, res) => {
   route.handle(req, res);
 }).listen(PORT);
 
-server.on("listening", () => console.log(`Server listening at port ${PORT}`));
+server.on("listening", () => {
+  console.log(`Server listening at port ${PORT}`);
+  console.log(`Try at http://localhost:${PORT}`);
+});
