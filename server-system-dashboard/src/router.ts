@@ -1,4 +1,4 @@
-import { serveDashboardHTML } from "./controller.js";
+import { serveCSS, serveHTML } from "./controller.js";
 import { ControllerFunction } from "./controller.js";
 
 interface Routes {
@@ -11,13 +11,13 @@ interface Routes {
 export const ROUTES: Routes = {
   "/": {
     method: "GET",
-    handle: serveDashboardHTML,
-  },
-  "/api/v1/metrics": {
-    method: "GET",
-    handle: () => undefined,
+    handle: serveHTML,
   },
   "/styles.css": {
+    method: "GET",
+    handle: serveCSS,
+  },
+  "/api/v1/metrics": {
     method: "GET",
     handle: () => undefined,
   },
