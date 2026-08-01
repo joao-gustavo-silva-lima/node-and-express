@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "node:http";
-import { dashboardRenderer } from "./views.js";
+import { dashboardRenderer } from "./renderer.js";
 
 export type ControllerFunction = (
   req: IncomingMessage,
@@ -10,14 +10,17 @@ export const serveDashboardHTML: ControllerFunction = (
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ): void => {
-  if (dashboardRenderer === undefined) {
+  try {
+    const data = dashboardRenderer();
+
+    res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    res.end(data);
+  } catch (error) {
     res.writeHead(500, { "content-type": "application/json" });
-    res.end(JSON.stringify({ error: "Template Error" }));
-    return;
+    res.end(
+      JSON.stringify({
+        message: `Internal Server Error: ${error}`,
+      }),
+    );
   }
-
-  const data = dashboardRenderer();
-
-  res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-  res.end(data);
 };
