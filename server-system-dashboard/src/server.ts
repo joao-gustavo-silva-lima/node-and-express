@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { ROUTES } from "./utils/router.utils.js";
+import { ROUTES } from "./router.js";
 
 const PORT = 5000;
 

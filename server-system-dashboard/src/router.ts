@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { serveDashboardHTML } from "./controller.utils.js";
-import { ControllerFunction } from "./controller.utils.js";
+import { serveDashboardHTML } from "./controller.js";
+import { ControllerFunction } from "./controller.js";
 
 interface Routes {
   [path: string]: {

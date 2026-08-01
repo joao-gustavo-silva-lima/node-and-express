@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "node:http";
-import { dashboardRenderer } from "./views.utils.js";
+import { dashboardRenderer } from "./views.js";
 
 export type ControllerFunction = (
   req: IncomingMessage,
