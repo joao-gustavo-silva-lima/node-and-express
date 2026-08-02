@@ -2,28 +2,34 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import ejs, { cache } from "ejs";
 
-const ejsFilePath = path.join(import.meta.dirname, "index.ejs");
-const ejsFileName = path.basename(ejsFilePath);
-
 const stylingFilePath = path.join(import.meta.dirname, "../public/styles.css");
 const stylingFileName = path.basename(stylingFilePath);
 
 const scriptFilePath = path.join(import.meta.dirname, "../public/script.js");
 const scriptFileName = path.basename(scriptFilePath);
 
-export const layoutRenderer = (() => {
+export const indexEJSTemplate = compileTemplate(
+  path.join(import.meta.dirname, "index.ejs"),
+);
+
+export const notFoundEJSTemplate = compileTemplate(
+  path.join(import.meta.dirname, "not-found.ejs"),
+);
+
+function compileTemplate(filePath: string) {
   try {
-    const template = readFileSync(ejsFilePath, "utf-8");
+    const template = readFileSync(filePath, "utf-8");
 
     return ejs.compile(template);
   } catch (error) {
-    console.log(`Compiling template '${ejsFileName}' failed:\n\n${error}`);
+    const fileName = path.basename(filePath);
+    console.log(`Compiling template '${fileName}' failed:\n\n${error}`);
 
     return (...args: unknown[]) => {
       throw "template rendering failed";
     };
   }
-})();
+}
 
 export const stylingRenderer = (() => {
   try {

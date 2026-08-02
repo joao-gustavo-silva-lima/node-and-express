@@ -1,5 +1,10 @@
 import { IncomingMessage, ServerResponse } from "node:http";
-import { layoutRenderer, scriptServer, stylingRenderer } from "./cache.js";
+import {
+  indexEJSTemplate,
+  notFoundEJSTemplate,
+  scriptServer,
+  stylingRenderer,
+} from "./cache.js";
 import { getSystemMetrics } from "./system-metrics.js";
 
 export type ControllerFunction = (
@@ -14,10 +19,7 @@ export const serveHTML: ControllerFunction = (
   res: ServerResponse<IncomingMessage>,
 ): void => {
   try {
-    const cachedHTML = layoutRenderer({
-      styleSheetHref: `${url.origin}/styles.css`,
-      scriptHref: `${url.origin}/script.js`,
-    });
+    const cachedHTML = indexEJSTemplate();
 
     res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     res.end(cachedHTML);
