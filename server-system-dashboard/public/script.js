@@ -28,7 +28,7 @@ function handleDOM(data) {
   ]) {
     TABS_CONTAINER.innerHTML += `
       <a class="container__tabs__tab" href="#${tabName.toLowerCase()}">
-        <ion-icon class="${ionIconName}"></ion-icon>
+        <ion-icon class="container__tabs__tab__icon" name="${ionIconName}"></ion-icon>
         <p class="container__tabs__tab__name">${tabName}</p>
       </a>
     `;
