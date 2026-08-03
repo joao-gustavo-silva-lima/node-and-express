@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 export const indexRenderer = cacheTemplate("index.view.ejs");
+export const notFoundRenderer = cacheTemplate("not-found.view.ejs");
 
 function cacheTemplate(fileName: string) {
   try {

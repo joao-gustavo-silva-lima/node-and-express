@@ -1,4 +1,5 @@
-import { indexRenderer } from "../cache/views.cache.js";
+import { TemplateFunction } from "ejs";
+import { indexRenderer, notFoundRenderer } from "../cache/renderer.cache.js";
 
 export function renderView(
   pathName: string,
@@ -7,20 +8,12 @@ export function renderView(
   { "content-type": "text/html; charset=utf-8" | "application/json" },
   string,
 ] {
-  const renderer = (() => {
-    switch (pathName) {
-      case "/":
-        return indexRenderer;
-
-      default:
-        return () => {
-          throw "404 Página Não Encontrada";
-        };
-    }
-  })();
+  const renderers: { [path: string]: TemplateFunction } = {
+    "/": indexRenderer,
+  };
 
   try {
-    const view = renderer();
+    const view = (renderers[pathName] ?? notFoundRenderer)();
 
     return [200, { "content-type": "text/html; charset=utf-8" }, view];
   } catch (error) {

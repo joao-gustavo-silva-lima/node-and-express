@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
 import { fetchMetricsAPI } from "./controllers/metrics.controller.js";
 import { serveStaticFile } from "./controllers/static.controller.js";
-import { renderView } from "./controllers/views.controller.js";
+import { renderView } from "./controllers/renderer.controller.js";
 
 const PORT = 5000;
 
