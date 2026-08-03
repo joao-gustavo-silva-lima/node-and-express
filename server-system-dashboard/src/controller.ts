@@ -1,5 +1,11 @@
 import { IncomingMessage, ServerResponse } from "node:http";
-import { indexTemplate, notFoundTemplate, scriptServer } from "./cache.js";
+import {
+  indexTemplate,
+  notFoundTemplate,
+  indexStyle,
+  notFoundStyle,
+  indexScript,
+} from "./cache.js";
 import { getSystemMetrics } from "./system-metrics.js";
 
 export type ControllerFunction = (
@@ -34,7 +40,7 @@ export const serveCSS: ControllerFunction = (
   res: ServerResponse<IncomingMessage>,
 ): void => {
   try {
-    const cachedCSS = stylingRenderer();
+    const cachedCSS = indexStyle();
 
     res.writeHead(200, { "content-type": "text/css; charset=utf-8" });
     res.end(cachedCSS);
@@ -54,7 +60,7 @@ export const serveJS: ControllerFunction = (
   res: ServerResponse<IncomingMessage>,
 ): void => {
   try {
-    const cachedScript = scriptServer();
+    const cachedScript = indexScript();
 
     res.writeHead(200, { "content-type": "text/javascript" });
     res.end(cachedScript);

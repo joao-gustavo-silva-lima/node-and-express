@@ -2,14 +2,13 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import ejs from "ejs";
 
-const scriptFilePath = path.join(import.meta.dirname, "../public/script.js");
-const scriptFileName = path.basename(scriptFilePath);
-
 export const indexTemplate = compileTemplate("index");
 export const notFoundTemplate = compileTemplate("not-found");
 
-export const indexStyle = cacheCSS("index");
-export const notFoundStyle = cacheCSS("not-found");
+export const indexStyle = cacheStatic("styles", "index");
+export const notFoundStyle = cacheStatic("styles", "not-found");
+
+export const indexScript = cacheStatic("scripts", "index");
 
 function compileTemplate(viewName: string) {
   const filePath = path.join(import.meta.dirname, `views/${viewName}.view.ejs`);
@@ -28,36 +27,34 @@ function compileTemplate(viewName: string) {
   }
 }
 
-function cacheCSS(styleName: string) {
+type PublicDirectory = "styles" | "scripts";
+
+function getStaticExtension(publicDir: PublicDirectory) {
+  switch (publicDir) {
+    case "styles":
+      return "style.css";
+
+    case "scripts":
+      return "script.js";
+  }
+}
+
+function cacheStatic(publicDir: PublicDirectory, fileName: string) {
   const filePath = path.join(
     import.meta.dirname,
-    `../public/styles/${styleName}.style.css`,
+    `../public/${publicDir}/${fileName}.${getStaticExtension(publicDir)}`,
   );
 
   try {
-    const cachedCSS = readFileSync(filePath, "utf-8");
+    const cachedFile = readFileSync(filePath, "utf-8");
 
-    return () => cachedCSS;
+    return () => cachedFile;
   } catch (error) {
     const fileName = path.basename(filePath);
     console.log(`Caching '${fileName}' failed:\n\n${error}`);
 
     return () => {
-      throw ".css file not reached";
+      throw `'${fileName}' not found`;
     };
   }
 }
-
-export const scriptServer = (() => {
-  try {
-    const cachedScript = readFileSync(scriptFilePath, "utf-8");
-
-    return () => cachedScript;
-  } catch (error) {
-    console.log(`Caching '${scriptFileName}' failed:\n\n${error}`);
-
-    return () => {
-      throw ".js file not reached";
-    };
-  }
-})();
