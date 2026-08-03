@@ -1,10 +1,5 @@
 import { IncomingMessage, ServerResponse } from "node:http";
-import {
-  indexTemplate,
-  notFoundTemplate,
-  scriptServer,
-  stylingRenderer,
-} from "./cache.js";
+import { indexTemplate, notFoundTemplate, scriptServer } from "./cache.js";
 import { getSystemMetrics } from "./system-metrics.js";
 
 export type ControllerFunction = (

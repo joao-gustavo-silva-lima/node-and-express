@@ -18,11 +18,11 @@ export const ROUTES: Routes = {
     method: "GET",
     handle: serveHTML,
   },
-  "/styles.css": {
+  "/index.style.css": {
     method: "GET",
     handle: serveCSS,
   },
-  "/script.js": {
+  "/index.script.js": {
     method: "GET",
     handle: serveJS,
   },
