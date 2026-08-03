@@ -1,6 +1,6 @@
 import { getSystemMetrics } from "../metrics/system.metrics.js";
 
-export function handleMetricsAPI(): [
+export function fetchMetricsAPI(): [
   number,
   { "content-type": "application/json" },
   string,

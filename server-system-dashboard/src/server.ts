@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
-import { handleMetricsAPI } from "./controllers/metrics.controller.js";
-import { serveStaticFile } from "./controllers/static-file-serving.controller.js";
+import { fetchMetricsAPI } from "./controllers/metrics.controller.js";
+import { serveStaticFile } from "./controllers/static.controller.js";
+import { renderView } from "./controllers/views.controller.js";
 
 const PORT = 5000;
 
@@ -12,14 +13,8 @@ const server = createServer((req, res) => {
     `http://${req.headers.host ?? `localhost:${PORT}`}`,
   );
 
-  if (req.method === "GET" && url.pathname === "/") {
-    res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ message: "OK" }));
-    return;
-  }
-
   if (req.method === "GET" && url.pathname === "/api/v1/metrics") {
-    const [statusCode, headers, payload] = handleMetricsAPI();
+    const [statusCode, headers, payload] = fetchMetricsAPI();
 
     res.writeHead(statusCode, headers);
     res.end(payload);
@@ -34,8 +29,10 @@ const server = createServer((req, res) => {
     return;
   }
 
-  res.writeHead(404, { "content-type": "application/json" });
-  res.end(JSON.stringify({ message: "404: Page Not Found" }));
+  const [statusCode, headers, payload] = renderView(url.pathname);
+
+  res.writeHead(statusCode, headers);
+  res.end(payload);
 }).listen(PORT);
 
 server.on("listening", () =>
