@@ -20,14 +20,26 @@ const RAM_USAGE_BAR = document.querySelector(
   ".container__view--ram__ranged-data__usage-bar",
 );
 
+const VIEWS = document.querySelectorAll(".container__view");
+
+function toogleViews(focusView) {
+  for (const view of VIEWS) {
+    if (view.classList.contains(`container__view--${focusView}`)) {
+      view.classList.remove("container__view--hidden");
+    } else {
+      view.classList.add("container__view--hidden");
+    }
+  }
+}
+
 function handleDOM(data) {
-  for (const [tabName, ionIconName] of [
-    ["Sistema", "desktop-outline"],
-    ["CPU", "hardware-chip-outline"],
-    ["RAM", "stats-chart-outline"],
+  for (const [tabName, ionIconName, classModifier] of [
+    ["Sistema", "desktop-outline", "system"],
+    ["CPU", "hardware-chip-outline", "cpus"],
+    ["RAM", "stats-chart-outline", "ram"],
   ]) {
     TABS_CONTAINER.innerHTML += `
-      <a class="container__tabs__tab" href="#${tabName.toLowerCase()}">
+      <a class="container__tabs__tab" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
         <ion-icon class="container__tabs__tab__icon" name="${ionIconName}"></ion-icon>
         <p class="container__tabs__tab__name">${tabName}</p>
       </a>
