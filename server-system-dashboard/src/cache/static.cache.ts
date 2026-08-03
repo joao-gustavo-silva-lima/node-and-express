@@ -6,6 +6,10 @@ export type StaticType = "styles" | "scripts";
 export const indexStyle = cacheStaticFile("styles", "index.style.css");
 export const indexScript = cacheStaticFile("scripts", "index.script.js");
 
+export const globalStyle = cacheStaticFile("styles", "global.style.css");
+
+export const notFoundStyle = cacheStaticFile("styles", "not-found.style.css");
+
 function cacheStaticFile(typeDir: StaticType, fileName: string) {
   try {
     const data = readFileSync(
@@ -30,6 +34,14 @@ export function getStaticFile(typeDir: StaticType, fileName: string) {
 
   if (typeDir === "styles" && fileName === "index.style.css") {
     return indexStyle();
+  }
+
+  if (typeDir === "styles" && fileName === "not-found.style.css") {
+    return notFoundStyle();
+  }
+
+  if (typeDir === "styles" && fileName === "global.style.css") {
+    return globalStyle();
   }
 
   throw `O caminho 'public/${typeDir}/${fileName}' não direciona a um arquivo estático válido no servidor`;
