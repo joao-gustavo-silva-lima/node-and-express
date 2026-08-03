@@ -8,16 +8,12 @@ export function serveStaticFile(
   { "content-type": `text/${"css" | "javascript"}` | "application/json" },
   string,
 ] {
-  const strURL = url.toString();
-  const fileName = path.basename(strURL);
-  const typeDir = path.basename(path.join(strURL, "..")) as StaticType;
-
-  console.log(typeDir, fileName);
+  const [fileType, fileName] = getFileLocationData(url);
 
   try {
-    const file = getStaticFile(typeDir, fileName);
+    const file = getStaticFile(fileType, fileName);
 
-    return [200, { "content-type": getStaticFileMIMEType(typeDir) }, file];
+    return [200, { "content-type": getStaticFileMIMEType(fileType) }, file];
   } catch (error) {
     return [
       404,
@@ -25,6 +21,15 @@ export function serveStaticFile(
       JSON.stringify({ error: error }),
     ];
   }
+}
+
+function getFileLocationData(url: URL): [StaticType, string] {
+  const stringfiedURL = url.toString();
+
+  return [
+    path.basename(path.join(stringfiedURL, "..")) as StaticType,
+    path.basename(stringfiedURL),
+  ];
 }
 
 function getStaticFileMIMEType(staticType: StaticType) {

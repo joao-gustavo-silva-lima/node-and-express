@@ -15,8 +15,6 @@ export function getSystemMetrics() {
   } catch (error) {
     console.error(error);
 
-    return () => {
-      throw "Erro Interno do Servidor: Não foi possível reunir as informações do sistema operacional.";
-    };
+    throw "Erro Interno do Servidor: Não foi possível reunir as informações do sistema operacional.";
   }
 }
