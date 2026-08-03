@@ -3,6 +3,7 @@ import {
   serveCSS,
   serveHTML,
   serveSystemMetrics,
+  serveStatic,
 } from "./controller.js";
 import { ControllerFunction } from "./controller.js";
 
@@ -18,13 +19,13 @@ export const ROUTES: Routes = {
     method: "GET",
     handle: serveHTML,
   },
-  "/index.style.css": {
+  "/public/styles/index": {
     method: "GET",
-    handle: serveCSS,
+    handle: serveStatic,
   },
-  "/index.script.js": {
+  "/public/scripts/index": {
     method: "GET",
-    handle: serveJS,
+    handle: serveStatic,
   },
   "/api/v1/metrics": {
     method: "GET",

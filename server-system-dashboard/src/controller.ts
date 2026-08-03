@@ -7,6 +7,7 @@ import {
   indexScript,
 } from "./cache.js";
 import { getSystemMetrics } from "./system-metrics.js";
+import path from "node:path";
 
 export type ControllerFunction = (
   url: URL,
@@ -33,6 +34,28 @@ export const serveHTML: ControllerFunction = (
     );
   }
 };
+
+export function serveStatic(
+  url: URL,
+  req: IncomingMessage,
+  res: ServerResponse<IncomingMessage>,
+) {
+  const publicDir = path.join(url.toString(), "..");
+
+  try {
+    const cachedStatic = indexStyle();
+
+    res.writeHead(200, { "content-type": "text/css; charset=utf-8" });
+    res.end(cachedStatic);
+  } catch (error) {
+    res.writeHead(500, { "content-type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: `Internal Server Error: ${error}`,
+      }),
+    );
+  }
+}
 
 export const serveCSS: ControllerFunction = (
   url: URL,
