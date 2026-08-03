@@ -13,8 +13,10 @@ export function getSystemMetrics() {
       "horário do relatório": new Date().toISOString(),
     };
   } catch (error) {
+    console.error(error);
+
     return () => {
-      throw "Erro Interno do Servidor: Não foi possível reunir as informações do sistema operacional do servidor.";
+      throw "Erro Interno do Servidor: Não foi possível reunir as informações do sistema operacional.";
     };
   }
 }

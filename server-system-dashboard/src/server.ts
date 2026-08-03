@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { handleMetricsAPI } from "./controllers/metrics.controller.js";
+import { serveStaticFile } from "./controllers/static-file-serving.controller.js";
 
 const PORT = 5000;
 
@@ -26,8 +27,10 @@ const server = createServer((req, res) => {
   }
 
   if (req.method === "GET" && STATIC_FILE_PATH.test(url.pathname)) {
-    res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ message: "OK" }));
+    const [statusCode, headers, payload] = serveStaticFile(url);
+
+    res.writeHead(statusCode, headers);
+    res.end(payload);
     return;
   }
 
