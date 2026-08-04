@@ -1,17 +1,23 @@
 import path from "node:path";
-import { getStaticFile, StaticType } from "../cache/static.cache.js";
+import { applicationCache } from "../cache/cache.js";
 
-export function serveStaticFile(
-  url: URL,
-): [
+export function serveStaticFile(url: URL): [
   number,
-  { "content-type": `text/${"css" | "javascript"}` | "application/json" },
+  {
+    "content-type":
+      | `text/${"css" | "javascript"}; charset=utf-8`
+      | "application/json";
+  },
   string,
 ] {
   const [fileType, fileName] = getFileLocationData(url);
 
   try {
-    const file = getStaticFile(fileType, fileName);
+    if (!applicationCache.has(fileName)) {
+      throw `O caminho 'public/${fileType}/${fileName}' não direciona a um arquivo estático válido no servidor`;
+    }
+
+    const file = applicationCache.get(fileName)!();
 
     return [200, { "content-type": getStaticFileMIMEType(fileType) }, file];
   } catch (error) {
@@ -23,21 +29,24 @@ export function serveStaticFile(
   }
 }
 
-function getFileLocationData(url: URL): [StaticType, string] {
+function getFileLocationData(url: URL): [string, string] {
   const stringfiedURL = url.toString();
 
   return [
-    path.basename(path.join(stringfiedURL, "..")) as StaticType,
+    path.basename(path.join(stringfiedURL, "..")),
     path.basename(stringfiedURL),
   ];
 }
 
-function getStaticFileMIMEType(staticType: StaticType) {
+function getStaticFileMIMEType(staticType: string) {
   switch (staticType) {
     case "styles":
-      return "text/css";
+      return "text/css; charset=utf-8";
 
     case "scripts":
-      return "text/javascript";
+      return "text/javascript; charset=utf-8";
+
+    default:
+      return "application/json";
   }
 }

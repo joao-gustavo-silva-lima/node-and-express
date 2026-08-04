@@ -1,35 +1,40 @@
+import { cacheData } from "./functions.cache.js";
 import { readdirSync } from "node:fs";
 import path from "node:path";
-import { cacheView } from "./renderer.cache.js";
-import { cacheStaticFile } from "./static.cache.js";
+import ejs from "ejs";
 
-type CachedFileFunction = (fileName: string) => string;
+type CachedFileFunction = () => string;
 
-export const cachingMap = new Map<string, CachedFileFunction>([
-  ...cacheDir("public", cacheStaticFile),
-  ...cacheDir("src/views", cacheView),
+export const applicationCache = new Map<string, CachedFileFunction>([
+  ...cacheDir("public"),
+  ...cacheDir("src/views", ejs.render),
 ]);
 
 function cacheDir(
   rootBasedDirPath: string,
-  cachingFunction: (fileName: string) => CachedFileFunction,
+  preCachingModifierFunction: (data: string) => string = (data) => data,
 ) {
   const dirPath = path.join(import.meta.dirname, "../..", rootBasedDirPath);
-  const newCachingMap: [string, CachedFileFunction][] = [];
+
+  const cachedDir: [string, CachedFileFunction][] = [];
+
   const dirEntries = readdirSync(dirPath, {
     recursive: true,
     withFileTypes: true,
   });
 
-  for (const entryPath of dirEntries) {
-    const fullPath = path.join(entryPath.parentPath, entryPath.name);
-
-    if (entryPath.isDirectory()) {
+  for (const entry of dirEntries) {
+    if (entry.isDirectory()) {
       continue;
     }
 
-    newCachingMap.push([entryPath.name, cachingFunction(fullPath)]);
+    const fullPath = path.join(entry.parentPath, entry.name);
+
+    cachedDir.push([
+      entry.name,
+      cacheData(fullPath, preCachingModifierFunction),
+    ]);
   }
 
-  return newCachingMap;
+  return cachedDir;
 }

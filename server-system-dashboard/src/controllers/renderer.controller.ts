@@ -1,5 +1,6 @@
-import { TemplateFunction } from "ejs";
-import { indexRenderer, notFoundRenderer } from "../cache/renderer.cache.js";
+import { applicationCache } from "../cache/cache.js";
+
+const pathToViewName = new Map([["/", "index.view.ejs"]]);
 
 export function renderView(
   pathName: string,
@@ -8,12 +9,9 @@ export function renderView(
   { "content-type": "text/html; charset=utf-8" | "application/json" },
   string,
 ] {
-  const renderers: { [path: string]: TemplateFunction } = {
-    "/": indexRenderer,
-  };
-
   try {
-    const view = (renderers[pathName] ?? notFoundRenderer)();
+    const viewName = pathToViewName.get(pathName) ?? "not-found.view.ejs";
+    const view = applicationCache.get(viewName)!();
 
     return [200, { "content-type": "text/html; charset=utf-8" }, view];
   } catch (error) {
