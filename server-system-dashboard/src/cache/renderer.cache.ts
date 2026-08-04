@@ -2,17 +2,14 @@ import ejs from "ejs";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-export const indexRenderer = cacheTemplate("index.view.ejs");
-export const notFoundRenderer = cacheTemplate("not-found.view.ejs");
-
-function cacheTemplate(fileName: string) {
+export function cacheView(fileName: string) {
   try {
-    const template = readFileSync(
+    const viewTemplate = readFileSync(
       path.join(import.meta.dirname, `../views/${fileName}`),
       "utf-8",
     );
 
-    return ejs.compile(template);
+    return () => ejs.render(viewTemplate);
   } catch (error) {
     console.error(error);
 
