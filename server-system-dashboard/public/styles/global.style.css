@@ -24,7 +24,6 @@ body {
   position: relative;
 
   width: 100%;
-  padding: 20px;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: #e6e7ec;
 }
