@@ -8,8 +8,9 @@
   flex-wrap: nowrap;
   flex-direction: row;
 
-  width: 500px;
+  width: 100%;
   padding: 10px;
+  max-width: 500px;
   aspect-ratio: 1/1;
   border-radius: 10px;
   background-color: #fff;
@@ -230,4 +231,32 @@
 .container__view--ram__ranged-data__fraction {
   font-size: 16px;
   color: #252832;
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 0;
+    height: 100dvh;
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .container__tabs,
+  .container__view {
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .container__tabs {
+    width: 100%;
+  }
+
+  .container__view--system__data-list__kv-pair {
+    flex-direction: column;
+  }
 }
