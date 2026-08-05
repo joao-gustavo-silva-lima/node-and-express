@@ -24,11 +24,11 @@ const VIEWS = document.querySelectorAll(".container__view");
 
 function toogleViews(focusView, relativeTab) {
   for (const view of VIEWS) {
-    if (view.classList.contains(`container__view--${focusView}`)) {
-      view.classList.remove("container__view--hidden");
-    } else {
-      view.classList.add("container__view--hidden");
-    }
+    const isFocusedView = view.classList.contains(
+      `container__view--${focusView}`,
+    );
+
+    view.classList[isFocusedView ? "add" : "remove"]("container__view--active");
   }
 
   document.querySelectorAll(".container__tabs__tab").forEach((tab) => {
@@ -49,7 +49,7 @@ function handleDOM(data) {
     ["RAM", "stats-chart-outline", "ram"],
   ]) {
     TABS_CONTAINER.innerHTML += `
-      <a class="container__tabs__tab container__tabs__tab--${classModifier} ${classModifier === "system" ? "container__tabs__tab--active" : ""}" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
+      <a class="container__tabs__tab container__tabs__tab--${classModifier} ${classModifier === "cpus" ? "container__tabs__tab--active" : ""}" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
         <ion-icon class="container__tabs__tab__icon" name="${ionIconName}"></ion-icon>
         <p class="container__tabs__tab__name">${tabName}</p>
       </a>
@@ -62,7 +62,13 @@ function handleDOM(data) {
     "plataforma",
     "tempo de atividade",
   ]) {
-    const value = data[property];
+    let value = data[property];
+
+    if (property === "tempo de atividade") {
+      const seconds = Number(value);
+
+      value = `${Math.floor(seconds / 3600)} horas, ${Math.floor((seconds / 60) % 60)} minutos, ${Math.floor(seconds % 60)} segundos`;
+    }
 
     SYSTEM_CONTENT_CONTAINER.innerHTML += `
       <li class="container__view--system__data-list__kv-pair">
