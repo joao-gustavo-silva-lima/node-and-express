@@ -214,3 +214,20 @@
   font-weight: 400;
   color: #252832;
 }
+
+.container__view--ram__ranged-data {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+.container__view--ram__ranged-data__usage-bar {
+  background-color: #e4ebf3;
+}
+
+.container__view--ram__ranged-data__fraction {
+  font-size: 16px;
+  color: #252832;
+}

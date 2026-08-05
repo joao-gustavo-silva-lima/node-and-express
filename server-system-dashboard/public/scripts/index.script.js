@@ -49,12 +49,22 @@ function handleDOM(data) {
     ["RAM", "stats-chart-outline", "ram"],
   ]) {
     TABS_CONTAINER.innerHTML += `
-      <a class="container__tabs__tab container__tabs__tab--${classModifier} ${classModifier === "cpus" ? "container__tabs__tab--active" : ""}" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
+      <a class="container__tabs__tab container__tabs__tab--${classModifier}" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
         <ion-icon class="container__tabs__tab__icon" name="${ionIconName}"></ion-icon>
         <p class="container__tabs__tab__name">${tabName}</p>
       </a>
     `;
   }
+
+  const firstActivatedModifier = "system";
+
+  document
+    .querySelector(`.container__view--${firstActivatedModifier}`)
+    .classList.add("container__view--active");
+
+  document
+    .querySelector(`.container__tabs__tab--${firstActivatedModifier}`)
+    .classList.add("container__tabs__tab--active");
 
   for (const property of [
     "host",
