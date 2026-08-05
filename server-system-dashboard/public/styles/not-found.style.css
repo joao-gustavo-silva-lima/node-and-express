@@ -102,7 +102,7 @@
   right: 12.5px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px), (max-height: 350px) {
   .container {
     width: 100%;
     border: none;

@@ -10,8 +10,9 @@
 
   width: 100%;
   padding: 10px;
+  height: 500px;
   max-width: 500px;
-  aspect-ratio: 1/1;
+  max-height: 100dvh;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.125);
@@ -233,7 +234,7 @@
   color: #252832;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 500px), (max-height: 500px) {
   .container {
     padding: 0;
     height: 100dvh;
