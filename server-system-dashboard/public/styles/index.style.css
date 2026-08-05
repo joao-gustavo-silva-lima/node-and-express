@@ -21,6 +21,7 @@
   flex-direction: column;
 
   gap: 10px;
+  padding: 10px;
   width: min-content;
   background-color: #0000fe;
   border-radius: 7.5px 0 0 7.5px;
@@ -28,14 +29,16 @@
 
 .container__tabs__title {
   width: 100%;
-  padding: 10px;
   color: white;
-  font-size: 22px;
+  font-size: 20px;
   text-align: center;
   margin-bottom: 10px;
 }
 
 .container__tabs__tab {
+  transition: transform 0.125s;
+  position: relative;
+
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -43,27 +46,71 @@
 
   gap: 7.5px;
   width: 100%;
-  padding: 5px;
-  margin-left: 10px;
+  padding: 7.5px;
+  overflow: hidden;
   border-radius: 5px;
-  border: 1px solid red;
+  text-decoration: none;
+}
+
+.container__tabs__tab:not(.container__tabs__tab--active)::before {
+  transition: all 0.25s;
+  content: " ";
+
+  transform: translate(-50%, -50%);
+  position: absolute;
+  left: -50%;
+  top: 0%;
+
+  z-index: 1;
+  opacity: 0;
+  width: 110%;
+  aspect-ratio: 1/1;
+  border-radius: 9999px;
+  background-color: #4865ee;
+}
+
+.container__tabs__tab:not(.container__tabs__tab--active):hover::before {
+  opacity: 1;
+  left: 50%;
+  top: 50%;
 }
 
 .container__tabs__tab:active {
+  transform: scale(95%);
+}
+
+.container__tabs__tab--active {
   background-color: #4865ee;
 }
 
 .container__tabs__tab__icon {
+  z-index: 1;
   width: 17.5px;
   height: 17.5px;
   color: white;
 }
 
 .container__tabs__tab__name {
+  z-index: 1;
   color: white;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.container__tabs__tab--active::after {
+  content: " ";
+
+  transform: translateY(-50%);
+  position: absolute;
+  right: 7.5px;
+  top: 50%;
+
+  z-index: 1;
+  width: 6.25px;
+  aspect-ratio: 1/1;
+  border-radius: 9999px;
+  background-color: white;
 }
 
 .container__view {
@@ -75,7 +122,7 @@
 
 .container__view__title {
   width: 100%;
-  font-size: 22px;
+  font-size: 20px;
   color: #1c2229;
   text-align: center;
   margin-bottom: 10px;
