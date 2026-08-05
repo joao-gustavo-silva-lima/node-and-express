@@ -22,7 +22,7 @@ const RAM_USAGE_BAR = document.querySelector(
 
 const VIEWS = document.querySelectorAll(".container__view");
 
-function toogleViews(focusView) {
+function toogleViews(focusView, relativeTab) {
   for (const view of VIEWS) {
     if (view.classList.contains(`container__view--${focusView}`)) {
       view.classList.remove("container__view--hidden");
@@ -30,6 +30,16 @@ function toogleViews(focusView) {
       view.classList.add("container__view--hidden");
     }
   }
+
+  document.querySelectorAll(".container__tabs__tab").forEach((tab) => {
+    const isFocusedTab = tab.classList.contains(
+      `container__tabs__tab--${focusView}`,
+    );
+
+    tab.classList[isFocusedTab ? "add" : "remove"](
+      "container__tabs__tab--active",
+    );
+  });
 }
 
 function handleDOM(data) {
@@ -39,7 +49,7 @@ function handleDOM(data) {
     ["RAM", "stats-chart-outline", "ram"],
   ]) {
     TABS_CONTAINER.innerHTML += `
-      <a class="container__tabs__tab" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
+      <a class="container__tabs__tab container__tabs__tab--${classModifier} ${classModifier === "system" ? "container__tabs__tab--active" : ""}" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
         <ion-icon class="container__tabs__tab__icon" name="${ionIconName}"></ion-icon>
         <p class="container__tabs__tab__name">${tabName}</p>
       </a>
