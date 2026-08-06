@@ -5,16 +5,23 @@ export function populateRAMView(DATA) {
     ".container__view--ram__ranged-data",
   );
 
+  const totalMemory = DATA["memória total"] / 1024 ** 3;
+  const freeMemory = DATA["memória livre"] / 1024 ** 3;
+  const consume = totalMemory - freeMemory;
+  const percentage = Math.floor((consume * 100) / totalMemory);
+
   VIEW_CONTENT_CONTAINER.innerHTML = `
     <input
       class="container__view--ram__ranged-data__usage-bar"
       type="range"
-      value="0"
+      value="${percentage}"
       max="100"
       min="0"
       disabled
     />
-    <p class="container__view--ram__ranged-data__fraction"></p>
+    <p class="container__view--ram__ranged-data__fraction">
+      ${consume.toFixed(2)} GB / ${totalMemory.toFixed(2)} GB
+    </p>
   `;
 
   const VIEW_ELEMENT = VIEW_CONTENT_CONTAINER.parentElement;
