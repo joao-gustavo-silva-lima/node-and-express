@@ -1,150 +1,20 @@
-fetch(`${window.origin}/api/v1/metrics`)
-  .then(async (res) => await res.json())
-  .then((data) => {
-    console.log(data);
-    handleDOM(data);
-  })
-  .catch((error) => console.log(error));
+import { populateCPUView } from "./index.cpu-view.script.js";
+import { populateRAMView } from "./index.ram-view.script.js";
+import { populateSystemView } from "./index.system-view.script.js";
+import { populateTabsContainer } from "./index.tabs.script.js";
 
-const TABS_CONTAINER = document.querySelector(".container__tabs");
-const SYSTEM_CONTENT_CONTAINER = document.querySelector(
-  ".container__view--system__data-list",
-);
-const CPUS_CONTENT_CONTAINER = document.querySelector(
-  ".container__view--cpus__data-list",
-);
-const RAM_USAGE_TEXT = document.querySelector(
-  ".container__view--ram__ranged-data__fraction",
-);
-const RAM_USAGE_BAR = document.querySelector(
-  ".container__view--ram__ranged-data__usage-bar",
-);
+export const DATA = await (async () => {
+  try {
+    const res = await fetch(`${window.origin}/api/v1/metrics`);
 
-const VIEWS = document.querySelectorAll(".container__view");
-
-function toogleViews(focusView, relativeTab) {
-  for (const view of VIEWS) {
-    const isFocusedView = view.classList.contains(
-      `container__view--${focusView}`,
-    );
-
-    view.classList[isFocusedView ? "add" : "remove"]("container__view--active");
+    return await res.json();
+  } catch {
+    window.location.replace(`${window.origin}/not-found`);
   }
+})();
 
-  document.querySelectorAll(".container__tabs__tab").forEach((tab) => {
-    const isFocusedTab = tab.classList.contains(
-      `container__tabs__tab--${focusView}`,
-    );
+populateTabsContainer();
 
-    tab.classList[isFocusedTab ? "add" : "remove"](
-      "container__tabs__tab--active",
-    );
-  });
-}
-
-function handleDOM(data) {
-  for (const [tabName, ionIconName, classModifier] of [
-    ["Sistema", "desktop-outline", "system"],
-    ["CPU", "hardware-chip-outline", "cpus"],
-    ["RAM", "stats-chart-outline", "ram"],
-  ]) {
-    TABS_CONTAINER.innerHTML += `
-      <a class="container__tabs__tab container__tabs__tab--${classModifier}" href="#${tabName.toLowerCase()}" onclick="toogleViews('${classModifier}')">
-        <ion-icon class="container__tabs__tab__icon" name="${ionIconName}"></ion-icon>
-        <p class="container__tabs__tab__name">${tabName}</p>
-      </a>
-    `;
-  }
-
-  const firstActivatedModifier = "system";
-
-  document
-    .querySelector(`.container__view--${firstActivatedModifier}`)
-    .classList.add("container__view--active");
-
-  document
-    .querySelector(`.container__tabs__tab--${firstActivatedModifier}`)
-    .classList.add("container__tabs__tab--active");
-
-  for (const property of [
-    "host",
-    "arquitetura",
-    "plataforma",
-    "tempo de atividade",
-  ]) {
-    let value = data[property];
-
-    if (property === "tempo de atividade") {
-      const seconds = Number(value);
-
-      value = `${Math.floor(seconds / 3600)} horas, ${Math.floor((seconds / 60) % 60)} minutos, ${Math.floor(seconds % 60)} segundos`;
-    }
-
-    SYSTEM_CONTENT_CONTAINER.innerHTML += `
-      <li class="container__view--system__data-list__kv-pair">
-        <p class="container__view--system__data-list__kv-pair__key">
-          ${property}:
-        </p>
-        <p class="container__view--system__data-list__kv-pair__value">
-          ${value}
-        </p>
-      </li>
-    `;
-  }
-
-  for (let i = 0; i < data["cpus"].length; i++) {
-    const cpu = data["cpus"][i];
-    const model = cpu["model"];
-    const speed = (cpu["speed"] / 1000).toFixed(2);
-
-    CPUS_CONTENT_CONTAINER.innerHTML += `
-      <li class="container__view--cpus__data-list__container">
-        <p class="container__view--cpus__data-list__container__title">
-          Núcleo ${i + 1}:
-        </p>
-        <ul class="container__view--cpus__data-list__container__infos">
-          <li     
-            class="container__view--cpus__data-list__container__infos__kv-pair"
-          >
-            <p 
-              class="container__view--cpus__data-list__container__infos__kv-pair__key"
-            >
-              Modelo: 
-            </p>
-            <p 
-              class="container__view--cpus__data-list__container__infos__kv-pair__value"
-            >
-              ${model} 
-            </p>
-          </li>
-          <li 
-            class="container__view--cpus__data-list__container__infos__kv-pair"
-          >
-            <p 
-              class="container__view--cpus__data-list__container__infos__kv-pair__key"
-            >
-              Velocidade: 
-            </p>
-            <p 
-              class="container__view--cpus__data-list__container__infos__kv-pair__value"
-            >
-              ${speed} GHz 
-            </p>
-          </li>
-        </ul>
-      </li>
-    `;
-  }
-
-  const totalMemory = (data["memória total"] / 1024 ** 3).toFixed(2);
-  const usedMemory = (
-    (data["memória total"] - data["memória livre"]) /
-    1024 ** 3
-  ).toFixed(2);
-  const usagePercentage = Math.floor(
-    (Number(usedMemory) * 100) / Number(totalMemory),
-  );
-
-  RAM_USAGE_TEXT.innerHTML = `${usedMemory} GB / ${totalMemory} GB`;
-  RAM_USAGE_BAR.value = usagePercentage;
-}
+populateSystemView(DATA);
+populateCPUView(DATA);
+populateRAMView(DATA);

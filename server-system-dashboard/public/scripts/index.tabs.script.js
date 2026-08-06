@@ -13,35 +13,37 @@ function activeTargetElement(elementCollection, baseClass, classModifier) {
   });
 }
 
-[
-  ["Sistema", "system", "desktop-outline"],
-  ["CPU", "cpus", "hardware-chip-outline"],
-  ["RAM", "ram", "stats-chart-outline"],
-].forEach(([tabName, classModifier, ionIconName], index) => {
-  TABS_CONTAINER.insertAdjacentHTML(
-    "beforeend",
-    `
-    <a 
-      class="
-        container__tabs__tab container__tabs__tab--${classModifier}
-        ${index === 0 ? "container__tabs__tab--active" : ""}
-      " 
-      href="#${tabName.toLowerCase()}"
-    >
-      <ion-icon 
-        class="container__tabs__tab__icon" 
-        name="${ionIconName}"
+export function populateTabsContainer() {
+  [
+    ["Sistema", "system", "desktop-outline"],
+    ["CPU", "cpus", "hardware-chip-outline"],
+    ["RAM", "ram", "stats-chart-outline"],
+  ].forEach(([tabName, classModifier, ionIconName], index) => {
+    TABS_CONTAINER.insertAdjacentHTML(
+      "beforeend",
+      `
+      <a 
+        class="
+          container__tabs__tab container__tabs__tab--${classModifier}
+          ${index === 0 ? "container__tabs__tab--active" : ""}
+        " 
+        href="#${tabName.toLowerCase()}"
       >
-      </ion-icon>
-      <p class="container__tabs__tab__name">${tabName}</p>
-    </a>
-  `,
-  );
+        <ion-icon 
+          class="container__tabs__tab__icon" 
+          name="${ionIconName}"
+        >
+        </ion-icon>
+        <p class="container__tabs__tab__name">${tabName}</p>
+      </a>
+    `,
+    );
 
-  TABS_CONTAINER.lastElementChild.addEventListener("click", () => {
-    activeTargetElement(TAB_ELEMENTS, "container__tabs__tab", classModifier);
-    activeTargetElement(VIEW_ELEMENTS, "container__view", classModifier);
+    TABS_CONTAINER.lastElementChild.addEventListener("click", () => {
+      activeTargetElement(TAB_ELEMENTS, "container__tabs__tab", classModifier);
+      activeTargetElement(VIEW_ELEMENTS, "container__view", classModifier);
+    });
+
+    TAB_ELEMENTS.push(TABS_CONTAINER.lastElementChild);
   });
-
-  TAB_ELEMENTS.push(TABS_CONTAINER.lastElementChild);
-});
+}
