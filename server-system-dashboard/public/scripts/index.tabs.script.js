@@ -1,16 +1,15 @@
 const TABS_CONTAINER = document.querySelector(".container__tabs");
 
 const TAB_ELEMENTS = [];
+export const VIEW_ELEMENTS = [];
 
-function focusView(classModifier) {
-  const focusedTabClass = `container__tabs__tab--${classModifier}`;
+function activeTargetElement(elementCollection, baseClass, classModifier) {
+  const targetClass = `${baseClass}--${classModifier}`;
 
-  TAB_ELEMENTS.forEach((tab) => {
-    const isFocusedTab = tab.classList.contains(focusedTabClass);
+  elementCollection.forEach((element) => {
+    const isTarget = element.classList.contains(targetClass);
 
-    tab.classList[isFocusedTab ? "add" : "remove"](
-      "container__tabs__tab--active",
-    );
+    element.classList[isTarget ? "add" : "remove"](`${baseClass}--active`);
   });
 }
 
@@ -39,9 +38,11 @@ function focusView(classModifier) {
   `,
   );
 
-  TABS_CONTAINER.lastElementChild.addEventListener("click", () =>
-    focusView(classModifier),
-  );
+  TABS_CONTAINER.lastElementChild.addEventListener("click", () => {
+    activeTargetElement(TAB_ELEMENTS, "container__tabs__tab", classModifier);
+    activeTargetElement(VIEW_ELEMENTS, "container__view", classModifier);
+    console.log(VIEW_ELEMENTS);
+  });
 
   TAB_ELEMENTS.push(TABS_CONTAINER.lastElementChild);
 });

@@ -1,3 +1,4 @@
+import { populateSystemView } from "./index.system-view.script.js";
 import {} from "./index.tabs.script.js";
 
 export const DATA = await (async () => {
@@ -9,3 +10,5 @@ export const DATA = await (async () => {
     window.location.replace(`${window.origin}/not-found`);
   }
 })();
+
+populateSystemView(DATA);
