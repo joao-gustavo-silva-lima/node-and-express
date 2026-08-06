@@ -1,3 +1,4 @@
+import { populateCPUView } from "./index.cpu-view.script.js";
 import { populateSystemView } from "./index.system-view.script.js";
 import {} from "./index.tabs.script.js";
 
@@ -12,3 +13,4 @@ export const DATA = await (async () => {
 })();
 
 populateSystemView(DATA);
+populateCPUView(DATA);

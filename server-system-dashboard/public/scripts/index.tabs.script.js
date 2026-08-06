@@ -41,7 +41,6 @@ function activeTargetElement(elementCollection, baseClass, classModifier) {
   TABS_CONTAINER.lastElementChild.addEventListener("click", () => {
     activeTargetElement(TAB_ELEMENTS, "container__tabs__tab", classModifier);
     activeTargetElement(VIEW_ELEMENTS, "container__view", classModifier);
-    console.log(VIEW_ELEMENTS);
   });
 
   TAB_ELEMENTS.push(TABS_CONTAINER.lastElementChild);
