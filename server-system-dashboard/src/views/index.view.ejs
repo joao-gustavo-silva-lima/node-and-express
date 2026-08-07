@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/styles/index.style.css" />
+    <link rel="stylesheet" href="../public/styles/global.style.css" />
+    <title>Dashboard | Sistema do Servidor</title>
+  </head>
+  <body>
+    <main class="container">
+      <nav class="container__tabs">
+        <h1 class="container__tabs__title">DASHBOARD DO SERVIDOR</h1>
+      </nav>
+
+      <section class="container__view container__view--system">
+        <h2 class="container__view__title">Sistema</h2>
+        <ul
+          class="container__view__data-list container__view--system__data-list"
+        ></ul>
+      </section>
+
+      <section class="container__view container__view--cpus">
+        <h2 class="container__view__title">CPU</h2>
+        <ul
+          class="container__view__data-list container__view--cpus__data-list"
+        ></ul>
+      </section>
+
+      <section class="container__view container__view--ram">
+        <h2 class="container__view__title">RAM: Em Uso / Total</h2>
+        <div class="container__view--ram__ranged-data"></div>
+      </section>
+    </main>
+
+    <script type="module" src="../public/scripts/index.script.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
+</html>
